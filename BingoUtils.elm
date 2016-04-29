@@ -7,12 +7,18 @@ delve into during the course.
 It's possible that future versions of the Elm core libraries
 might provide these functions.
 -}
-
+import Json.Decode
 import String exposing (toInt)
 import Html exposing (Attribute)
-import Html.Events exposing (on, targetValue)
+import Html.Events exposing (on, onWithOptions, targetValue)
 import Signal exposing (Address)
 
+onFormSubmit address action =
+  onWithOptions
+    "submit"
+    { preventDefault = True, stopPropagation = False }
+    ( Json.Decode.succeed Nothing )
+    (\_ -> Signal.message address action)
 
 onInput : Address a -> (String -> a) -> Attribute
 onInput address f =

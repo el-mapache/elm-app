@@ -10334,11 +10334,21 @@ Elm.Actions.BingoTermAction.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
+   var Add = {ctor: "Add"};
+   var UpdatePoints = function (a) {    return {ctor: "UpdatePoints",_0: a};};
+   var UpdatePhrase = function (a) {    return {ctor: "UpdatePhrase",_0: a};};
    var Mark = function (a) {    return {ctor: "Mark",_0: a};};
    var Delete = function (a) {    return {ctor: "Delete",_0: a};};
    var Sort = {ctor: "Sort"};
    var NoOp = {ctor: "NoOp"};
-   return _elm.Actions.BingoTermAction.values = {_op: _op,NoOp: NoOp,Sort: Sort,Delete: Delete,Mark: Mark};
+   return _elm.Actions.BingoTermAction.values = {_op: _op
+                                                ,NoOp: NoOp
+                                                ,Sort: Sort
+                                                ,Delete: Delete
+                                                ,Mark: Mark
+                                                ,UpdatePhrase: UpdatePhrase
+                                                ,UpdatePoints: UpdatePoints
+                                                ,Add: Add};
 };
 Elm.Models = Elm.Models || {};
 Elm.Models.BingoTerm = Elm.Models.BingoTerm || {};
@@ -10373,7 +10383,7 @@ Elm.Models.NewBingoTerm.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var NewBingoTerm = F2(function (a,b) {    return {phase: a,points: b};});
+   var NewBingoTerm = F2(function (a,b) {    return {phrase: a,points: b};});
    return _elm.Models.NewBingoTerm.values = {_op: _op,NewBingoTerm: NewBingoTerm};
 };
 Elm.Definitions = Elm.Definitions || {};
@@ -10393,6 +10403,85 @@ Elm.Definitions.make = function (_elm) {
    var _op = {};
    var AppState = F2(function (a,b) {    return {entries: a,bingoItemInput: b};});
    return _elm.Definitions.values = {_op: _op,AppState: AppState};
+};
+Elm.BingoUtils = Elm.BingoUtils || {};
+Elm.BingoUtils.make = function (_elm) {
+   "use strict";
+   _elm.BingoUtils = _elm.BingoUtils || {};
+   if (_elm.BingoUtils.values) return _elm.BingoUtils.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $Json$Decode = Elm.Json.Decode.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $String = Elm.String.make(_elm);
+   var _op = {};
+   var parseInt = function (string) {    var _p0 = $String.toInt(string);if (_p0.ctor === "Ok") {    return _p0._0;} else {    return 0;}};
+   var onInput = F2(function (address,f) {
+      return A3($Html$Events.on,"input",$Html$Events.targetValue,function (v) {    return A2($Signal.message,address,f(v));});
+   });
+   var onFormSubmit = F2(function (address,action) {
+      return A4($Html$Events.onWithOptions,
+      "submit",
+      {preventDefault: true,stopPropagation: false},
+      $Json$Decode.succeed($Maybe.Nothing),
+      function (_p1) {
+         return A2($Signal.message,address,action);
+      });
+   });
+   return _elm.BingoUtils.values = {_op: _op,onFormSubmit: onFormSubmit,onInput: onInput,parseInt: parseInt};
+};
+Elm.Views = Elm.Views || {};
+Elm.Views.Header = Elm.Views.Header || {};
+Elm.Views.Header.make = function (_elm) {
+   "use strict";
+   _elm.Views = _elm.Views || {};
+   _elm.Views.Header = _elm.Views.Header || {};
+   if (_elm.Views.Header.values) return _elm.Views.Header.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var headerView = function (title) {
+      var children = _U.list([A2($Html.h1,_U.list([]),_U.list([$Html.text(title)]))]);
+      var attributes = _U.list([]);
+      return A2($Html.header,attributes,children);
+   };
+   return _elm.Views.Header.values = {_op: _op,headerView: headerView};
+};
+Elm.Views = Elm.Views || {};
+Elm.Views.Footer = Elm.Views.Footer || {};
+Elm.Views.Footer.make = function (_elm) {
+   "use strict";
+   _elm.Views = _elm.Views || {};
+   _elm.Views.Footer = _elm.Views.Footer || {};
+   if (_elm.Views.Footer.values) return _elm.Views.Footer.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var footerView = A2($Html.footer,
+   _U.list([]),
+   _U.list([A2($Html.a,
+   _U.list([$Html$Attributes.href("http://availableforfriendship.com"),A2($Html$Attributes.attribute,"target","_blank")]),
+   _U.list([$Html.text("More over here!")]))]));
+   return _elm.Views.Footer.values = {_op: _op,footerView: footerView};
 };
 Elm.Views = Elm.Views || {};
 Elm.Views.DeleteButton = Elm.Views.DeleteButton || {};
@@ -10526,10 +10615,54 @@ Elm.Views.SortButton.make = function (_elm) {
    var _op = {};
    var sortButtonView = function (address) {
       return A2($Html.button,
-      _U.list([$Html$Attributes.$class("sort"),A2($Html$Events.onClick,address,$Actions$BingoTermAction.Sort)]),
+      _U.list([$Html$Attributes.$class("btn btn-sort"),A2($Html$Events.onClick,address,$Actions$BingoTermAction.Sort)]),
       _U.list([$Html.text("Sort")]));
    };
    return _elm.Views.SortButton.values = {_op: _op,sortButtonView: sortButtonView};
+};
+Elm.Views = Elm.Views || {};
+Elm.Views.NewTermForm = Elm.Views.NewTermForm || {};
+Elm.Views.NewTermForm.make = function (_elm) {
+   "use strict";
+   _elm.Views = _elm.Views || {};
+   _elm.Views.NewTermForm = _elm.Views.NewTermForm || {};
+   if (_elm.Views.NewTermForm.values) return _elm.Views.NewTermForm.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Actions$BingoTermAction = Elm.Actions.BingoTermAction.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $BingoUtils = Elm.BingoUtils.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var newTermFormView = F2(function (address,model) {
+      return A2($Html.form,
+      _U.list([A2($BingoUtils.onFormSubmit,address,$Actions$BingoTermAction.NoOp)]),
+      _U.list([A2($Html.input,
+              _U.list([$Html$Attributes.type$("text")
+                      ,$Html$Attributes.placeholder("phrase")
+                      ,$Html$Attributes.value(model.phrase)
+                      ,$Html$Attributes.name("phrase")
+                      ,$Html$Attributes.autofocus(true)
+                      ,A2($BingoUtils.onInput,address,$Actions$BingoTermAction.UpdatePhrase)]),
+              _U.list([]))
+              ,A2($Html.input,
+              _U.list([$Html$Attributes.type$("text")
+                      ,$Html$Attributes.placeholder("points")
+                      ,$Html$Attributes.value(model.points)
+                      ,$Html$Attributes.name("points")
+                      ,A2($BingoUtils.onInput,address,$Actions$BingoTermAction.UpdatePoints)]),
+              _U.list([]))
+              ,A2($Html.button,
+              _U.list([$Html$Attributes.$class("btn"),A2($Html$Events.onClick,address,$Actions$BingoTermAction.Add)]),
+              _U.list([$Html.text("Add")]))]));
+   });
+   return _elm.Views.NewTermForm.values = {_op: _op,newTermFormView: newTermFormView};
 };
 Elm.Views = Elm.Views || {};
 Elm.Views.App = Elm.Views.App || {};
@@ -10550,22 +10683,19 @@ Elm.Views.App.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Views$EntryList = Elm.Views.EntryList.make(_elm),
+   $Views$Footer = Elm.Views.Footer.make(_elm),
+   $Views$Header = Elm.Views.Header.make(_elm),
+   $Views$NewTermForm = Elm.Views.NewTermForm.make(_elm),
    $Views$SortButton = Elm.Views.SortButton.make(_elm);
    var _op = {};
-   var pageFooter = A2($Html.footer,
-   _U.list([]),
-   _U.list([A2($Html.a,
-   _U.list([$Html$Attributes.href("http://availableforfriendship.com"),A2($Html$Attributes.attribute,"target","_blank")]),
-   _U.list([$Html.text("More over here!")]))]));
-   var pageHeader = function (title) {
-      var children = _U.list([A2($Html.h1,_U.list([]),_U.list([$Html.text(title)]))]);
-      var attributes = _U.list([]);
-      return A2($Html.header,attributes,children);
-   };
    var appView = F2(function (address,appState) {
       return A2($Html.div,
       _U.list([$Html$Attributes.id("container")]),
-      _U.list([pageHeader("bingo!"),A2($Views$EntryList.entryListView,address,appState.entries),$Views$SortButton.sortButtonView(address),pageFooter]));
+      _U.list([$Views$Header.headerView("bingo!")
+              ,A2($Views$NewTermForm.newTermFormView,address,appState.bingoItemInput)
+              ,A2($Views$EntryList.entryListView,address,appState.entries)
+              ,$Views$SortButton.sortButtonView(address)
+              ,$Views$Footer.footerView]));
    });
    return _elm.Views.App.values = {_op: _op,appView: appView};
 };
@@ -10577,6 +10707,7 @@ Elm.Bingo.make = function (_elm) {
    var _U = Elm.Native.Utils.make(_elm),
    $Actions$BingoTermAction = Elm.Actions.BingoTermAction.make(_elm),
    $Basics = Elm.Basics.make(_elm),
+   $BingoUtils = Elm.BingoUtils.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Definitions = Elm.Definitions.make(_elm),
    $Html = Elm.Html.make(_elm),
@@ -10596,8 +10727,19 @@ Elm.Bingo.make = function (_elm) {
          case "Sort": return _U.update(model,{entries: A2($List.sortBy,function (_) {    return _.points;},model.entries)});
          case "Delete": var getRemainingEntries = A2($List.filter,function (entry) {    return !_U.eq(entry.id,_p0._0);},model.entries);
            return _U.update(model,{entries: getRemainingEntries});
-         default: var updateEntry = function (entry) {    return _U.eq(entry.id,_p0._0) ? _U.update(entry,{wasSpoken: $Basics.not(entry.wasSpoken)}) : entry;};
-           return _U.update(model,{entries: A2($List.map,updateEntry,model.entries)});}
+         case "Mark": var updateEntry = function (entry) {
+              return _U.eq(entry.id,_p0._0) ? _U.update(entry,{wasSpoken: $Basics.not(entry.wasSpoken)}) : entry;
+           };
+           return _U.update(model,{entries: A2($List.map,updateEntry,model.entries)});
+         case "UpdatePhrase": return _U.update(model,{bingoItemInput: A2($Models$NewBingoTerm.NewBingoTerm,_p0._0,model.bingoItemInput.points)});
+         case "UpdatePoints": return _U.update(model,{bingoItemInput: A2($Models$NewBingoTerm.NewBingoTerm,model.bingoItemInput.phrase,_p0._0)});
+         default: var entriesCount = $List.length(model.entries);
+           var nextId = entriesCount + 1;
+           var phrase = model.bingoItemInput.phrase;
+           var points = $BingoUtils.parseInt(model.bingoItemInput.points);
+           var nextBingoItem = A4($Models$BingoTerm.BingoTerm,phrase,points,false,nextId);
+           var updatedEntries = A2($Basics._op["++"],model.entries,_U.list([nextBingoItem]));
+           return _U.update(model,{entries: updatedEntries,bingoItemInput: A2($Models$NewBingoTerm.NewBingoTerm,"","")});}
    });
    var appState = {entries: _U.list([A4($Models$BingoTerm.BingoTerm,"Future-Proof",100,false,1)
                                     ,A4($Models$BingoTerm.BingoTerm,"Disrupt",150,false,2)

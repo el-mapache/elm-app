@@ -9,5 +9,5 @@ import Actions.BingoTermAction exposing (..)
 
 sortButtonView address =
   button
-    [ class "sort", onClick address Sort ]
+    [ class "btn btn-sort", onClick address Sort ]
     [ text "Sort" ]

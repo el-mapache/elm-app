@@ -1,6 +1,6 @@
 module Models.NewBingoTerm where
 
 type alias NewBingoTerm =
-  { phase: String,
+  { phrase: String,
     points: String
   }

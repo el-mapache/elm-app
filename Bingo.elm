@@ -4,6 +4,8 @@ module Bingo where
 -- Libraries
 import Definitions
 import Html
+import BingoUtils
+
 import StartApp.Simple as StartApp
 
 -- View describing the entire app structure
@@ -14,6 +16,7 @@ import Models.NewBingoTerm exposing (NewBingoTerm)
 
 import Actions.BingoTermAction exposing (..)
 
+import Debug
 
 -- begin to separate the view logic from the data.
 -- app could now receive data from another source, like the server
@@ -50,6 +53,23 @@ update action model =
             else entry
       in
         { model | entries = List.map updateEntry model.entries }
+    UpdatePhrase value ->
+      { model |  bingoItemInput = NewBingoTerm value model.bingoItemInput.points }
+    UpdatePoints value ->
+      { model |  bingoItemInput = NewBingoTerm model.bingoItemInput.phrase value }
+    Add ->
+      let
+        points = BingoUtils.parseInt model.bingoItemInput.points
+        phrase = model.bingoItemInput.phrase
+        entriesCount = List.length model.entries
+        nextId = entriesCount + 1
+        nextBingoItem = BingoTerm phrase points False nextId
+        updatedEntries = model.entries ++ [nextBingoItem]
+      in
+        { model |
+          entries = updatedEntries,
+          bingoItemInput = NewBingoTerm "" ""
+        }
 
 -- I think all elm programs have to start with a main function
 main : Signal Html.Html
